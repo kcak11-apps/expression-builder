@@ -90,15 +90,42 @@
             result = result.replace(/sspexp_/gi, "");
             result = result.replace(/'/gi, "");
 
+            /** START OF WRAPPING INDIVIDUAL RULES INSIDE PARENTHESES LOGIC */
+            /** Ensure that substring wrapping in ( ) is done based on superstring comparison */
+            /** First update the longer rules then update the smaller rules */
+            var dupMap = {};
+            var ruleArray = [];
             JSON.stringify(resultAsObject, function (key, value) {
                 if (key === "rules" && (value instanceof Array)) {
                     value.forEach((rule) => {
-                        var _r = rule.field + " " + rule.operator + " " + rule.value;
-                        result = result.split(_r).join("(" + _r + ")");
+                        if ("field" in rule && "operator" in rule && "value" in rule) {
+                            var _r = rule.field + " " + rule.operator + " " + rule.value;
+                            if (!dupMap[_r]) {
+                                ruleArray.push(_r);
+                                dupMap[_r] = "Y";
+                            }
+                        }
                     });
                 }
                 return value;
             });
+            ruleArray.sort(function (r1, r2) {
+                /** Sort Descending to place longer rules at top of array */
+                return -1 * ((r1.length > r2.length) ? 1 : (r1.length < r2.length) ? -1 : 0);
+            });
+            var tokenMap = {};
+            ruleArray.forEach(function (_r) {
+                var token = "PARSINGTOKEN_" + ("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".split("").sort(function () { return Math.random() - Math.random(); }).join(""));
+                tokenMap[token] = _r;
+                result = result.split(_r).join("(" + token + ")");
+            });
+            for (var key in tokenMap) {
+                if (key.indexOf("PARSINGTOKEN_") === 0) {
+                    result = result.split(key).join(tokenMap[key]);
+                }
+            }
+            /** END OF WRAPPING INDIVIDUAL RULES INSIDE PARENTHESES LOGIC */
+
             result = "(" + result + ")";
             result = result.split("(").map((t) => { return t.trim(); }).join("(").split(")").map((t) => { return t.trim(); }).join(")").replace(/\)and\(/gi, ") AND (").replace(/\)or\(/gi, ") OR (");
             return result;
