@@ -4250,7 +4250,7 @@ function _typeof2(obj) { "@babel/helpers - typeof"; return _typeof2 = "function"
           if (!(options && options.devTools && options.devTools.ignore[check.name]) && check.perform(interaction)) {
             var _scope$logger;
 
-            (_scope$logger = scope.logger).warn.apply(_scope$logger, [prefix + check.text].concat(___toConsumableArray_28(check.getInfo(interaction))));
+            // (_scope$logger = scope.logger).warn.apply(_scope$logger, [prefix + check.text].concat(___toConsumableArray_28(check.getInfo(interaction))));
           }
         }
       }
