@@ -97,7 +97,7 @@
             var ruleArray = [];
             JSON.stringify(resultAsObject, function (key, value) {
                 if (key === "rules" && (value instanceof Array)) {
-                    value.forEach((rule) => {
+                    value.forEach(function (rule) {
                         if ("field" in rule && "operator" in rule && "value" in rule) {
                             var _r = rule.field + " " + rule.operator + " " + rule.value;
                             if (!dupMap[_r]) {
@@ -127,15 +127,15 @@
             /** END OF WRAPPING INDIVIDUAL RULES INSIDE PARENTHESES LOGIC */
 
             result = "(" + result + ")";
-            result = result.split("(").map((t) => { return t.trim(); }).join("(").split(")").map((t) => { return t.trim(); }).join(")").replace(/\)and\(/gi, ") AND (").replace(/\)or\(/gi, ") OR (");
+            result = result.split("(").map(function (t) { return t.trim(); }).join("(").split(")").map(function (t) { return t.trim(); }).join(")").replace(/\)and\(/gi, ") AND (").replace(/\)or\(/gi, ") OR (");
             return result;
         },
         transformAHExpressonToSQL: function (expr) {
             var result = expr;
 
-            result = result.split("(").map((t) => {
+            result = result.split("(").map(function (t) {
                 return t.trim();
-            }).join("(").split(")").map((t) => {
+            }).join("(").split(")").map(function (t) {
                 return t.trim();
             }).join(")")
                 .replace(/\)and/gi, ") AND")

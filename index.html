@@ -689,7 +689,8 @@
     // reset builder
     $('.reset').on('click', function () {
       $('#builder').queryBuilder('reset');
-      $('#result').addClass('hide').find('pre').empty();
+      $('#result').addClass('hide').find('pre#SQL').empty();
+      $("#result").find('textarea#AHEXPRESSION')[0].value = "";
     });
 
     // get rules
@@ -727,9 +728,11 @@
         $('#builder').queryBuilder('setRulesFromSQL', sql);
         $("#result").find('textarea#AHEXPRESSION')[0].style.color = "#000";
         $("#result").find('textarea#AHEXPRESSION')[0].style.borderColor = "#000";
+        $("#result").find('textarea#AHEXPRESSION')[0].style.backgroundColor = "#fff";
       } catch (exjs) {
         $("#result").find('textarea#AHEXPRESSION')[0].style.color = "#a94442";
         $("#result").find('textarea#AHEXPRESSION')[0].style.borderColor = "#a94442";
+        $("#result").find('textarea#AHEXPRESSION')[0].style.backgroundColor = "#fdd";
         throw exjs;
       }
     });
