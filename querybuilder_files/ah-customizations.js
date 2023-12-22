@@ -102,6 +102,52 @@
             result = "(" + result + ")";
             result = result.split("(").map((t) => { return t.trim(); }).join("(").split(")").map((t) => { return t.trim(); }).join(")").replace(/\)and\(/gi, ") AND (").replace(/\)or\(/gi, ") OR (");
             return result;
+        },
+        transformAHExpressonToSQL: function (expr) {
+            var result = expr;
+
+            result = result.split("(").map((t) => {
+                return t.trim();
+            }).join("(").split(")").map((t) => {
+                return t.trim();
+            }).join(")")
+                .replace(/\)and/gi, ") AND")
+                .replace(/and\(/gi, "AND (")
+                .replace(/\)or/gi, ") OR")
+                .replace(/or\(/gi, "OR (");
+
+            result = result.replace(/\(group /gi, "(sspexp_group ");
+
+            var parsedEQStatements = result.split("EQ ").join("EQ '");
+            while (parsedEQStatements.indexOf("EQ '") > -1) {
+                var s = parsedEQStatements.substring(0, parsedEQStatements.indexOf("EQ '"));
+                var e = parsedEQStatements.substring(parsedEQStatements.indexOf("EQ '"));
+                e = e.replace(")", "')");
+                parsedEQStatements = s + e;
+                parsedEQStatements = parsedEQStatements.replace("EQ '", "EQ_OPER_START");
+            }
+            parsedEQStatements = parsedEQStatements.split("EQ_OPER_START").join("EQ '");
+            result = parsedEQStatements;
+
+            var parsedNEStatements = result.split("NE ").join("NE '");
+            while (parsedNEStatements.indexOf("NE '") > -1) {
+                var s = parsedNEStatements.substring(0, parsedNEStatements.indexOf("NE '"));
+                var e = parsedNEStatements.substring(parsedNEStatements.indexOf("NE '"));
+                e = e.replace(")", "')");
+                parsedNEStatements = s + e;
+                parsedNEStatements = parsedNEStatements.replace("NE '", "NE_OPER_START");
+            }
+            parsedNEStatements = parsedNEStatements.split("NE_OPER_START").join("NE '");
+            result = parsedNEStatements;
+
+            result = result.replace(/ NE /gi, " != ");
+            result = result.replace(/ EQ /gi, " = ");
+            result = result.replace(/ LT /gi, " < ");
+            result = result.replace(/ LE /gi, " <= ");
+            result = result.replace(/ GT /gi, " > ");
+            result = result.replace(/ GE /gi, " >= ");
+
+            return result;
         }
     };
     window.QueryBuilderUtil = QBU;

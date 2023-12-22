@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>ExpressionBuilder POC</title>
+  <link href="https://www.kcak11.com/favicon.png" rel="icon" type="image/x-icon" />
 
   <link rel="stylesheet" href="./querybuilder_files/bootstrap.css" id="bt-theme">
   <link rel="stylesheet" href="./querybuilder_files/bootstrap-select.css">
@@ -33,6 +34,13 @@
 
     .dropdown-header {
       display: none;
+    }
+
+    textarea#AHEXPRESSION {
+      width: 100%;
+      outline: none;
+      resize: none;
+      height: 60px;
     }
   </style>
 </head>
@@ -114,7 +122,8 @@
         <h3>Output (SQL)</h3>
         <pre id="SQL"></pre>
         <h3>Output (AH Expression)</h3>
-        <pre id="AHEXPRESSION"></pre>
+        <textarea id="AHEXPRESSION"></textarea>
+        <button class="btn btn-primary update-widget">Update Widget</button>
       </div>
     </div>
   </div>
@@ -709,9 +718,20 @@
       $("#result").find('pre#SQL').html(
         res.sql + (res.params ? '\n\n' + JSON.stringify(res.params, undefined, 2) : '')
       );
-      $("#result").find('pre#AHEXPRESSION').html(
-        QueryBuilderUtil.transformSQLToAHExpression(res.sql)
-      );
+      $("#result").find('textarea#AHEXPRESSION')[0].value = QueryBuilderUtil.transformSQLToAHExpression(res.sql);
+    });
+
+    $('.update-widget').on('click', function () {
+      var sql = QueryBuilderUtil.transformAHExpressonToSQL($("#result").find('textarea#AHEXPRESSION')[0].value);
+      try {
+        $('#builder').queryBuilder('setRulesFromSQL', sql);
+        $("#result").find('textarea#AHEXPRESSION')[0].style.color = "#000";
+        $("#result").find('textarea#AHEXPRESSION')[0].style.borderColor = "#000";
+      } catch (exjs) {
+        $("#result").find('textarea#AHEXPRESSION')[0].style.color = "#a94442";
+        $("#result").find('textarea#AHEXPRESSION')[0].style.borderColor = "#a94442";
+        throw exjs;
+      }
     });
 
     // set filters
