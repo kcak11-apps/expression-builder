@@ -131,7 +131,7 @@
             return result;
         },
         transformAHExpressonToSQL: function (expr) {
-            var result = expr;
+            var result = decodeURIComponent(encodeURIComponent(expr).split("%0A").join("").split("%0D").join(""));
 
             result = result.split("(").map(function (t) {
                 return t.trim();
