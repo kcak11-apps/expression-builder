@@ -720,6 +720,9 @@
         res.sql + (res.params ? '\n\n' + JSON.stringify(res.params, undefined, 2) : '')
       );
       $("#result").find('textarea#AHEXPRESSION')[0].value = QueryBuilderUtil.transformSQLToAHExpression(res.sql);
+      $("#result").find('textarea#AHEXPRESSION')[0].style.color = "#000";
+      $("#result").find('textarea#AHEXPRESSION')[0].style.borderColor = "#000";
+      $("#result").find('textarea#AHEXPRESSION')[0].style.backgroundColor = "#fff";
     });
 
     $('.update-widget').on('click', function () {
